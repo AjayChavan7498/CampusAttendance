@@ -1,11 +1,11 @@
-# स्टेज १: प्रोजेक्ट बिल्ड करणे
-FROM maven:3.8.5-openjdk-17 AS build
+# स्टेज १: प्रोजेक्ट बिल्ड करणे (Java 21)
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# स्टेज २: प्रोजेक्ट रन करणे
-FROM openjdk:17.0.1-jdk-slim
+# स्टेज २: प्रोजेक्ट रन करणे (Java 21)
+FROM eclipse-temurin:21-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/campuspulse-attendance-1.0.0.jar app.jar
 EXPOSE 8080
