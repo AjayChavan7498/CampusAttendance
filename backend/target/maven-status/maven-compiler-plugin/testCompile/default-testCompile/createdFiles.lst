@@ -1,0 +1,3 @@
+com\campuspulse\attendance\AttendanceServiceTest.class
+com\campuspulse\attendance\RoleIsolationTest.class
+com\campuspulse\attendance\AuthControllerTest.class
