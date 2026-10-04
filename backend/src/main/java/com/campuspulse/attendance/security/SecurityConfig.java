@@ -27,7 +27,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${campuspulse.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173}")
+   @Value("${campuspulse.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,https://campus-attendance-chi.vercel.app}")
     private String allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
