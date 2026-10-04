@@ -5,7 +5,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # स्टेज २: प्रोजेक्ट रन करणे (Java 21)
-FROM eclipse-temurin:21-jdk-slim
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/target/campuspulse-attendance-1.0.0.jar app.jar
 EXPOSE 8080
