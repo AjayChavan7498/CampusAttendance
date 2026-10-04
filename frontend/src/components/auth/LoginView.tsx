@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
+import React, { useState } from "react";
+import { useApp } from "../../context/AppContext";
 import {
   GraduationCap,
   Lock,
@@ -8,12 +8,12 @@ import {
   AlertCircle,
   Sun,
   Moon,
-} from 'lucide-react';
+} from "lucide-react";
 
 export const LoginView: React.FC = () => {
   const { login, darkMode, toggleDarkMode } = useApp();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +24,9 @@ export const LoginView: React.FC = () => {
     const result = await login(email, password);
     setLoading(false);
     if (!result.success) {
-      setError(result.message || 'Login failed. Please check your credentials.');
+      setError(
+        result.message || "Login failed. Please check your credentials.",
+      );
     }
   };
 
@@ -59,13 +61,14 @@ export const LoginView: React.FC = () => {
             <GraduationCap className="w-9 h-9" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            CampusPulse Attendance
+            CampusPluse Attendance
           </h1>
           <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
             Mobile-First Progressive Web Application
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-            Institutional Attendance & Governance across Science, Commerce & Arts
+            Institutional Attendance & Governance across Science, Commerce &
+            Arts
           </p>
         </div>
 
@@ -77,7 +80,8 @@ export const LoginView: React.FC = () => {
                 Institutional Portal Login
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Stateless JWT Security • Role and Department detected automatically
+                Stateless JWT Security • Role and Department detected
+                automatically
               </p>
             </div>
 
