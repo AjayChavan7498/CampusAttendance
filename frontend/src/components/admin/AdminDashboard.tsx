@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Department } from '../../types';
+import { Department, User } from '../../types';
 import { AdminHeader } from './AdminHeader';
 import { AdminNavigation, AdminTab } from './AdminNavigation';
 import { AnalyticsOverviewTab } from './AnalyticsOverviewTab';
 import { DepartmentsHODTab } from './DepartmentsHODTab';
+import { UserManagementTab } from './UserManagementTab';
 import { LiveAttendanceFeedTab } from './LiveAttendanceFeedTab';
 import { ReportsBackupTab } from './ReportsBackupTab';
 import { AddDepartmentModal, DepartmentFormData } from './AddDepartmentModal';
 import { AddHODModal, HODAssignmentData } from './AddHODModal';
+import { ResetPasswordModal } from './ResetPasswordModal';
 
 interface AdminDashboardProps {
   onOpenSpecsModal?: () => void;
@@ -21,12 +23,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = () => {
     liveFeed,
     hods,
     teachers,
+    allUsers,
     createDepartment,
     updateDepartment,
     deleteDepartment,
     createHod,
     assignHod,
     refreshAdminData,
+    refreshAllUsers,
+    resetUserPassword,
   } = useApp();
 
   // Tab State
@@ -37,7 +42,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = () => {
   const [editingDept, setEditingDept] = useState<Department | null>(null);
   const [showAssignHODModal, setShowAssignHODModal] = useState(false);
   const [targetDeptForHOD, setTargetDeptForHOD] = useState<Department | null>(null);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [selectedUserForReset, setSelectedUserForReset] = useState<User | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleOpenResetPassword = (user: User) => {
+    setSelectedUserForReset(user);
+    setShowResetPasswordModal(true);
+  };
 
   // Department Save Handler (Full CRUD: Create & Update)
   const handleSaveDepartment = async (data: DepartmentFormData) => {
@@ -118,6 +130,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = () => {
         onTabChange={setActiveTab}
         departmentsCount={departments.length}
         liveFeedCount={liveFeed.length}
+        usersCount={allUsers.length}
       />
 
       {/* 3. Tab Views */}
@@ -140,6 +153,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = () => {
           onEditDepartment={handleEditDepartment}
           onDeleteDepartment={handleDeleteDepartment}
           onReassignHOD={(dept) => handleOpenAssignHOD(dept)}
+          onResetPassword={handleOpenResetPassword}
+        />
+      )}
+
+      {activeTab === 'users' && (
+        <UserManagementTab
+          users={allUsers}
+          onResetPasswordClick={handleOpenResetPassword}
+          onRefresh={refreshAllUsers}
         />
       )}
 
@@ -179,6 +201,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = () => {
         departments={departments}
         availableHODs={hods}
         targetDepartment={targetDeptForHOD}
+      />
+
+      <ResetPasswordModal
+        isOpen={showResetPasswordModal}
+        onClose={() => {
+          setShowResetPasswordModal(false);
+          setSelectedUserForReset(null);
+        }}
+        user={selectedUserForReset}
+        onResetPassword={resetUserPassword}
       />
     </div>
   );

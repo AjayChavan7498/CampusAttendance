@@ -16,17 +16,39 @@ export const LoginView: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [coldStartNotice, setColdStartNotice] = useState(false);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const result = await login(email, password);
-    setLoading(false);
-    if (!result.success) {
-      setError(
-        result.message || "Login failed. Please check your credentials.",
-      );
+    setColdStartNotice(false);
+
+    const timer = setTimeout(() => {
+      setColdStartNotice(true);
+    }, 3500);
+
+    try {
+      const result = await login(email, password);
+      clearTimeout(timer);
+      setLoading(false);
+      setColdStartNotice(false);
+
+      if (!result.success) {
+        const msg = result.message || "Login failed. Please check your credentials.";
+        if (msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network')) {
+          setError(
+            "Unable to reach the server. The Render backend may be waking up from sleep (which takes ~30-45s on free tier). Please wait a few seconds and try again."
+          );
+        } else {
+          setError(msg);
+        }
+      }
+    } catch (err: any) {
+      clearTimeout(timer);
+      setLoading(false);
+      setColdStartNotice(false);
+      setError(err?.message || "An unexpected error occurred during login.");
     }
   };
 
@@ -141,6 +163,14 @@ export const LoginView: React.FC = () => {
                   </>
                 )}
               </button>
+
+              {coldStartNotice && (
+                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center animate-pulse">
+                  <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                    Connecting to server... Render free tier instances may take ~30s to wake up on first request.
+                  </p>
+                </div>
+              )}
             </form>
           </div>
         </div>

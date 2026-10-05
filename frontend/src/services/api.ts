@@ -1,8 +1,11 @@
+import { User } from '../types';
+
 const defaultApiUrl = typeof window !== 'undefined' && import.meta.env.PROD
-  ? `${window.location.origin}/api/v1`
+  ? 'https://campusattendance.onrender.com/api/v1'
   : 'http://localhost:8080/api/v1';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || defaultApiUrl;
+const rawApiUrl = (import.meta.env.VITE_API_URL || defaultApiUrl).trim().replace(/\/+$/, '');
+const API_BASE_URL = rawApiUrl.endsWith('/api/v1') ? rawApiUrl : `${rawApiUrl}/api/v1`;
 
 
 export interface ApiResponse<T> {
@@ -118,5 +121,17 @@ export const api = {
     link.click();
     link.remove();
     window.URL.revokeObjectURL(downloadUrl);
+  },
+
+  adminGetUsers: async (role?: string, search?: string): Promise<User[]> => {
+    const params = new URLSearchParams();
+    if (role && role !== 'ALL') params.append('role', role);
+    if (search && search.trim()) params.append('search', search.trim());
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return api.get<User[]>(`/admin/users${query}`);
+  },
+
+  adminResetPassword: async (userId: string, newPassword: string): Promise<User> => {
+    return api.put<User>(`/admin/users/${userId}/password`, { newPassword });
   },
 };

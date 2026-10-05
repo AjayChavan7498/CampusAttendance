@@ -5,6 +5,7 @@ C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\common\ErrorResponse.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\common\GlobalExceptionHandler.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\common\ResourceNotFoundException.java
+C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\config\CorsConfig.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\config\DataInitializer.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\controller\AdminController.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\controller\AuthController.java
@@ -30,6 +31,7 @@ C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\auth\CreateUserRequest.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\auth\LoginRequest.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\auth\LoginResponse.java
+C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\auth\ResetPasswordRequest.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\auth\UserDTO.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\course\CourseDTO.java
 C:\Users\Ajay Chavan\.gemini\antigravity\scratch\campuspulse-attendance\backend\src\main\java\com\campuspulse\attendance\dto\course\CreateCourseRequest.java

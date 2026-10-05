@@ -154,4 +154,56 @@ public class AdminController {
                 .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
                 .body(csv);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<ApiResponse<List<UserDTO>>> getAllUsers(
+            @RequestParam(required = false) Role role,
+            @RequestParam(required = false) String search) {
+        List<User> users = role != null
+                ? userRepository.findByRole(role)
+                : userRepository.findAll();
+
+        if (search != null && !search.trim().isEmpty()) {
+            String query = search.trim().toLowerCase();
+            users = users.stream()
+                    .filter(u -> (u.getName() != null && u.getName().toLowerCase().contains(query))
+                            || (u.getEmail() != null && u.getEmail().toLowerCase().contains(query)))
+                    .collect(Collectors.toList());
+        }
+
+        List<UserDTO> dtos = users.stream().map(this::toUserDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.ok(dtos));
+    }
+
+    @PutMapping("/users/{userId}/password")
+    public ResponseEntity<ApiResponse<UserDTO>> resetUserPassword(
+            @PathVariable String userId,
+            @Valid @RequestBody com.campuspulse.attendance.dto.auth.ResetPasswordRequest req) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new com.campuspulse.attendance.common.ResourceNotFoundException("User not found with ID: " + userId));
+
+        user.setPasswordHash(passwordEncoder.encode(req.getNewPassword().trim()));
+        User updated = userRepository.save(user);
+
+        return ResponseEntity.ok(ApiResponse.ok("Password reset successfully for " + updated.getEmail(), toUserDTO(updated)));
+    }
+
+    @PostMapping("/users/{userId}/reset-password")
+    public ResponseEntity<ApiResponse<UserDTO>> resetUserPasswordAlias(
+            @PathVariable String userId,
+            @Valid @RequestBody com.campuspulse.attendance.dto.auth.ResetPasswordRequest req) {
+        return resetUserPassword(userId, req);
+    }
+
+    private UserDTO toUserDTO(User u) {
+        return new UserDTO(
+                u.getId(),
+                u.getName(),
+                u.getEmail(),
+                u.getRole() != null ? u.getRole().name() : null,
+                u.getDepartment() != null ? u.getDepartment().getId() : null,
+                u.getDepartment() != null ? u.getDepartment().getName() : null,
+                (u.getDepartment() != null && u.getDepartment().getStream() != null) ? u.getDepartment().getStream().name() : null
+        );
+    }
 }

@@ -51,6 +51,9 @@ interface AppContextType {
   createHod: (name: string, email: string, password: string, departmentId?: string) => Promise<void>;
   assignHod: (departmentId: string, hodId: string) => Promise<void>;
   refreshAdminData: () => Promise<void>;
+  allUsers: User[];
+  refreshAllUsers: () => Promise<void>;
+  resetUserPassword: (userId: string, newPassword: string) => Promise<void>;
 
   // Actions - HOD
   createCourse: (course: Partial<Course>) => Promise<void>;
@@ -97,6 +100,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [overviewStats, setOverviewStats] = useState<OverviewStats | null>(null);
   const [teachers, setTeachers] = useState<User[]>([]);
   const [hods, setHods] = useState<User[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
 
   // Update Pending Offline Sync Count
   const updateQueueStats = useCallback(async () => {
@@ -176,18 +180,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const refreshAdminData = useCallback(async () => {
     if (!currentUser || currentUser.role !== 'ADMIN') return;
     try {
-      const [overview, depts, hodList, live] = await Promise.all([
+      const [overview, depts, hodList, live, usersList] = await Promise.all([
         api.get<OverviewStats>('/admin/overview'),
         api.get<Department[]>('/admin/departments'),
         api.get<User[]>('/admin/hods'),
         api.get<AttendanceRecord[]>('/admin/attendance/live'),
+        api.adminGetUsers(),
       ]);
       setOverviewStats(overview);
       setDepartments(depts);
       setHods(hodList);
       setRecords(live);
+      setAllUsers(usersList);
     } catch (e) {
       console.error('Failed to load admin data:', e);
+    }
+  }, [currentUser]);
+
+  const refreshAllUsers = useCallback(async () => {
+    if (!currentUser || currentUser.role !== 'ADMIN') return;
+    try {
+      const usersList = await api.adminGetUsers();
+      setAllUsers(usersList);
+    } catch (e) {
+      console.error('Failed to load all users:', e);
     }
   }, [currentUser]);
 
@@ -390,6 +406,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await refreshAdminData();
   };
 
+  const resetUserPassword = async (userId: string, newPassword: string) => {
+    await api.adminResetPassword(userId, newPassword);
+    await refreshAllUsers();
+  };
+
   // HOD Actions
   const createCourse = async (course: Partial<Course>) => {
     await api.post('/hod/courses', course);
@@ -513,6 +534,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         createHod,
         assignHod,
         refreshAdminData,
+        allUsers,
+        refreshAllUsers,
+        resetUserPassword,
         createCourse,
         updateCourse,
         deleteCourse,

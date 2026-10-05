@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Layers,
+  KeyRound,
 } from 'lucide-react';
 
 interface DepartmentsHODTabProps {
@@ -22,6 +23,7 @@ interface DepartmentsHODTabProps {
   onEditDepartment: (dept: Department) => void;
   onDeleteDepartment: (deptId: string) => void;
   onReassignHOD: (dept: Department) => void;
+  onResetPassword?: (user: User) => void;
 }
 
 export const DepartmentsHODTab: React.FC<DepartmentsHODTabProps> = ({
@@ -32,6 +34,7 @@ export const DepartmentsHODTab: React.FC<DepartmentsHODTabProps> = ({
   onEditDepartment,
   onDeleteDepartment,
   onReassignHOD,
+  onResetPassword,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStream, setSelectedStream] = useState<string>('All');
@@ -239,6 +242,27 @@ export const DepartmentsHODTab: React.FC<DepartmentsHODTabProps> = ({
                           <UserCheck className="w-3.5 h-3.5" />
                           <span>{hasHOD ? 'Change HOD' : 'Assign HOD'}</span>
                         </button>
+                        {hasHOD && onResetPassword && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const userObj = matchedHod || {
+                                id: dept.hodId!,
+                                name: dept.hodName!,
+                                email: hodEmail || '',
+                                role: 'HOD',
+                                departmentId: dept.id,
+                                departmentName: dept.name,
+                                stream: dept.stream,
+                              };
+                              onResetPassword(userObj);
+                            }}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-amber-600/30 text-amber-400 border border-slate-700 cursor-pointer"
+                            title="Reset HOD Password"
+                          >
+                            <KeyRound className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => onEditDepartment(dept)}
@@ -406,6 +430,29 @@ export const DepartmentsHODTab: React.FC<DepartmentsHODTabProps> = ({
                             >
                               <UserCheck className="w-3.5 h-3.5" />
                             </button>
+
+                            {/* Reset HOD Password */}
+                            {hasHOD && onResetPassword && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const userObj = matchedHod || {
+                                    id: dept.hodId!,
+                                    name: dept.hodName!,
+                                    email: hodEmail || '',
+                                    role: 'HOD',
+                                    departmentId: dept.id,
+                                    departmentName: dept.name,
+                                    stream: dept.stream,
+                                  };
+                                  onResetPassword(userObj);
+                                }}
+                                title="Reset HOD Password"
+                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-amber-600/30 text-slate-300 hover:text-amber-400 border border-slate-700 transition cursor-pointer"
+                              >
+                                <KeyRound className="w-3.5 h-3.5" />
+                              </button>
+                            )}
 
                             {/* Edit Department */}
                             <button

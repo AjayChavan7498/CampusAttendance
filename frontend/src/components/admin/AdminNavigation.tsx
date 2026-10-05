@@ -4,15 +4,17 @@ import {
   Building2,
   Radio,
   FileSpreadsheet,
+  KeyRound,
 } from 'lucide-react';
 
-export type AdminTab = 'analytics' | 'departments' | 'live' | 'reports';
+export type AdminTab = 'analytics' | 'departments' | 'users' | 'live' | 'reports';
 
 interface AdminNavigationProps {
   activeTab: AdminTab;
   onTabChange: (tab: AdminTab) => void;
   departmentsCount?: number;
   liveFeedCount?: number;
+  usersCount?: number;
 }
 
 export const AdminNavigation: React.FC<AdminNavigationProps> = ({
@@ -20,6 +22,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   onTabChange,
   departmentsCount = 35,
   liveFeedCount = 0,
+  usersCount,
 }) => {
   const tabs = [
     {
@@ -34,6 +37,13 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       description: 'Manage departmental units & HOD assignments',
       icon: Building2,
       badge: departmentsCount,
+    },
+    {
+      id: 'users' as AdminTab,
+      label: 'Users & Passwords',
+      description: 'Reset credentials & manage user accounts',
+      icon: KeyRound,
+      badge: usersCount,
     },
     {
       id: 'live' as AdminTab,
@@ -53,7 +63,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
 
   return (
     <div className="w-full bg-slate-900/90 backdrop-blur-md rounded-2xl p-1.5 border border-slate-800 shadow-md">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-1.5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

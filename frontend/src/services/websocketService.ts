@@ -19,9 +19,11 @@ class WebSocketService {
     }
 
     const defaultWsHost = typeof window !== 'undefined' && import.meta.env.PROD
-      ? `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//${window.location.host}/ws`
+      ? 'https://campusattendance.onrender.com/ws'
       : 'http://localhost:8080/ws';
-    const host = import.meta.env.VITE_WS_URL || defaultWsHost;
+    let host = (import.meta.env.VITE_WS_URL || defaultWsHost).trim();
+    if (host.startsWith('ws://')) host = host.replace('ws://', 'http://');
+    else if (host.startsWith('wss://')) host = host.replace('wss://', 'https://');
     const SockJSClass = (SockJS as any)?.default || SockJS;
 
     this.client = new Client({
